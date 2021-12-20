@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-
+import djongo
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -76,8 +76,24 @@ WSGI_APPLICATION = 'Database.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'djongo',
+        'ENFORCE_SCHEMA': True,
+        'LOGGING': {
+            'version': 1,
+            'loggers': {
+                'djongo': {
+                    'level': 'DEBUG',
+                    'propogate': False,
+                }
+            },
+         },
+        'NAME': 'E_MARKET',
+        'CLIENT': {
+            'host': '192.168.1.107',
+            'port': 27017,
+            'authSource': 'db-name',
+            'authMechanism': 'SCRAM-SHA-1'
+        }
     }
 }
 
