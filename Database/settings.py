@@ -11,10 +11,12 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-import djongo
+from mongoengine import connect
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+connect('E_MARKET',host='192.168.1.107',port=27017,retryWrites="false")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -37,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'e_marketSys',
 ]
 
 MIDDLEWARE = [
@@ -76,24 +79,7 @@ WSGI_APPLICATION = 'Database.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'ENFORCE_SCHEMA': True,
-        'LOGGING': {
-            'version': 1,
-            'loggers': {
-                'djongo': {
-                    'level': 'DEBUG',
-                    'propogate': False,
-                }
-            },
-         },
-        'NAME': 'E_MARKET',
-        'CLIENT': {
-            'host': '192.168.1.107',
-            'port': 27017,
-            'authSource': 'db-name',
-            'authMechanism': 'SCRAM-SHA-1'
-        }
+        'ENGINE': 'django.db.backends.dummy',
     }
 }
 
