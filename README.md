@@ -15,6 +15,12 @@ https://blog.csdn.net/kevinmcy/article/details/82712074/
 
 4、数据库搭建好之后执行`use E_MARKET`创建项目需要的数据库  
 
+5、关闭mongo服务  
+
+`
+ps -ef|grep mongo|grep -v grep | awk '{print $2}'|xargs kill -2
+`
+
 ## 2.项目开发
 ### 拉取项目
 `git clone git@github.com:Messiahhhh/DistributedDatabase.git`
