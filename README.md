@@ -15,12 +15,36 @@ https://blog.csdn.net/kevinmcy/article/details/82712074/
 
 4、数据库搭建好之后执行`use E_MARKET`创建项目需要的数据库  
 
-5、关闭mongo服务  
+5、搭好之后关闭mongo服务的方法  
 
 `
-ps -ef|grep mongo|grep -v grep | awk '{print $2}'|xargs kill -2
-`
+ps -ef|grep mongo|grep -v grep | awk '{print $2}'|xargs kill -2  
+`  
 
+6、搭好之后快速开启mongo服务的方法  
+1）三台虚拟机执行相同操作  
+
+`
+mongod -f /home/mongodb/conf/config.conf  
+`  
+
+`
+mongod -f /home/mongodb/conf/shard1.conf
+`  
+
+`
+mongod -f /home/mongodb/conf/shard2.conf`  
+
+`  
+mongod -f /home/mongodb/conf/shard3.conf  
+`  
+
+`mongos -f /home/mongodb/conf/mongos.conf`
+`  
+2)在任意一台虚拟机上启动  
+
+`mongo --host 虚拟机的ip --port 27017
+`
 ## 2.项目开发
 ### 拉取项目
 `git clone git@github.com:Messiahhhh/DistributedDatabase.git`
