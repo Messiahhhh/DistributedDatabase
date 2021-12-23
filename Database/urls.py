@@ -19,5 +19,17 @@ from e_marketSys import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('post/', views.post),
+    path('login/', views.login),
+    path('manage/user/add', views.manageUserAdd),
+    path('manage/user/update', views.userUpdate),
+    path('manage/user/list', views.userList),
+    path('manage/user/delete', views.userDelete),
+    path('manage/product/add', views.productAdd),
+    path('manage/product/update', views.productUpdate),
+    path('manage/product/delete', views.productDelete),
+    path('manage/product/list', views.productList),
+    path('manage/order/create', views.orderCreate),
+    path('manage/order/list', views.orderList),
+
+
 ]
