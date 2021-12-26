@@ -39,8 +39,9 @@ mongod -f /home/mongodb/conf/shard2.conf`
 mongod -f /home/mongodb/conf/shard3.conf  
 `  
 
-`mongos -f /home/mongodb/conf/mongos.conf`
+`mongos -f /home/mongodb/conf/mongos.conf
 `  
+
 2)在任意一台虚拟机上启动  
 
 `mongo --host 虚拟机的ip --port 27017

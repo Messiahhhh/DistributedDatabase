@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.contrib import admin
 from .models import ProductDetailInfo,OrderInfo,OrderDetailInfo,UserBasicInfo
 from django.http import JsonResponse
+from django.http import HttpResponse
 from django.contrib.auth.hashers import make_password, check_password
 
 def dbtest(request):
@@ -40,6 +41,9 @@ def login(request):
                 return JsonResponse({"status": 1,
                                      "msg": "用户名或密码不正确！"
                                      })
+    else:
+        return HttpResponse(status=404)
+
 
 def manageUserAdd(request):
     pass
