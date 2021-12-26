@@ -64,10 +64,13 @@ mongod -f /home/mongodb/conf/shard3.conf
 `python manage.py runserver 自己电脑的ip:5000`  
 
 
-浏览器输入  
+对于GET请求浏览器输入  
 
 `自己电脑ip:5000/功能函数对应的url(url在/Database/Database/url.py找对应的)  
 `  
+
+对于POST请求，使用postman模拟请求并且传递符合条件的参数  
+https://www.postman.com/  
 
 即可测试编写的功能
 
