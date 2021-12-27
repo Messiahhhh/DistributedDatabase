@@ -16,7 +16,7 @@ from mongoengine import connect
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-connect('E_MARKET',host='192.168.43.157',port=27017,retryWrites="false")
+connect('E_MARKET',host='192.168.0.103',port=27017,retryWrites="false")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
