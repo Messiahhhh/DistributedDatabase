@@ -18,7 +18,7 @@ class ProductDetailInfo(mongoengine.Document):
 
 
 class OrderInfo(mongoengine.Document):
-    oderId = mongoengine.ReferenceField('OrderDetailInfo')
+    orderId = mongoengine.ReferenceField('OrderDetailInfo')
     count = mongoengine.IntField(null=True)
     price = mongoengine.FloatField(null=True)
     proId = mongoengine.ListField(mongoengine.ReferenceField('ProductDetailInfo'))
