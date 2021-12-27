@@ -27,7 +27,7 @@ class OrderInfo(mongoengine.Document):
 class OrderDetailInfo(mongoengine.Document):
     orderId = mongoengine.StringField(primary_key=True)
     orderNo = mongoengine.IntField(null=True)
-    userId = mongoengine.ReferenceField('userBasicInfo')
+    userId = mongoengine.ReferenceField('UserBasicInfo')
     sendName = mongoengine.StringField(null=True)
     sendAddress = mongoengine.StringField(null=True)
     sendZip = mongoengine.StringField(null=True)
@@ -37,7 +37,7 @@ class OrderDetailInfo(mongoengine.Document):
     time = mongoengine.DateTimeField(default=datetime.datetime.now)
     tag = mongoengine.IntField(null=True)
 
-
+    
 class UserBasicInfo(mongoengine.Document):
     userName = mongoengine.StringField(primary_key=True)
     passWord = mongoengine.StringField(null=True)
@@ -47,3 +47,4 @@ class UserBasicInfo(mongoengine.Document):
     zip = mongoengine.StringField(null=True)
     email = mongoengine.StringField(null=True)
     registerTime = mongoengine.DateTimeField(default=datetime.datetime.now)
+
