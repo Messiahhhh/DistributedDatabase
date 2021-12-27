@@ -27,7 +27,7 @@ class OrderInfo(mongoengine.Document):
 class OrderDetailInfo(mongoengine.Document):
     orderId = mongoengine.StringField(primary_key=True)
     orderNo = mongoengine.IntField(null=True)
-    userId = mongoengine.ReferenceField('userBasicInfo')
+    userId = mongoengine.ReferenceField('UserBasicInfo')
     sendName = mongoengine.StringField(null=True)
     sendAddress = mongoengine.StringField(null=True)
     sendZip = mongoengine.StringField(null=True)
