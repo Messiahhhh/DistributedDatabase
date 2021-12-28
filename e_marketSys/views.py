@@ -21,20 +21,20 @@ def login(request):
             checkUser = UserBasicInfo.objects(userName=userName)
             return JsonResponse({"status":0,
                                  "data":{
-                                     "_id":checkUser.id,
+                                     "_id":checkUser[0].id,
                                      "password":passWord,
                                      "username":userName,
-                                     "create_time":checkUser.registerTime
+                                     "create_time":checkUser[0].registerTime
                                  }
                                  })
         else:
             if check_password(passWord,checkUser.passWord):
                 return JsonResponse({"status": 0,
                                      "data": {
-                                         "_id": checkUser.id,
+                                         "_id": checkUser[0].id,
                                          "password": passWord,
                                          "username": userName,
-                                         "create_time": checkUser.registerTime
+                                         "create_time": checkUser[0].registerTime
                                      }
                                      })
             else:
