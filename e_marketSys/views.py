@@ -3,7 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.contrib import admin
 from .models import ProductDetailInfo,OrderInfo,OrderDetailInfo,UserBasicInfo
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
 from django.contrib.auth.hashers import make_password, check_password
 
 def dbtest(request):
@@ -40,7 +40,6 @@ def login(request):
                 return JsonResponse({"status": 1,
                                      "msg": "用户名或密码不正确！"
                                      })
-
 def manageUserAdd(request):
     pass
 def userUpdate(request):
