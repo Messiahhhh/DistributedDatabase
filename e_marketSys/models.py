@@ -37,7 +37,7 @@ class OrderDetailInfo(mongoengine.Document):
     time = mongoengine.DateTimeField(default=datetime.datetime.now)
     tag = mongoengine.IntField(null=True)
 
-
+    
 class UserBasicInfo(mongoengine.Document):
     userName = mongoengine.StringField(primary_key=True)
     passWord = mongoengine.StringField(null=True)
@@ -47,3 +47,4 @@ class UserBasicInfo(mongoengine.Document):
     zip = mongoengine.StringField(null=True)
     email = mongoengine.StringField(null=True)
     registerTime = mongoengine.DateTimeField(default=datetime.datetime.now)
+
