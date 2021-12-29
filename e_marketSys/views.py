@@ -69,7 +69,7 @@ def productList(request):
 def orderCreate(request):
     if request.method == 'POST':
         dict = json.loads(request.body)
-        
+
         orderid    = dict["_id"]        # 订单ID
         userid     = dict["_userid"]
         totalPrice = dict["totalPrice"]
@@ -85,16 +85,17 @@ def orderCreate(request):
         # 生成物品清单 
         productList = []
         for item in products:
+            purchases  = item["purchase"]
             singleProduct = ProductDetailInfo.objects( proName = item["name"] )[0]
             dict = {
                  "name" : singleProduct.proName         ,
                  "desc" : singleProduct.descript        ,
                 "price" : singleProduct.price           ,
-                "stock" : singleProduct.reserveCount-1  ,
+                "stock" : singleProduct.reserveCount-purchases  ,
                   "img" : singleProduct.image           
             }
             # 更新库存
-            singleProduct.update ( dec__reserveCount = 1 )
+            singleProduct.update ( dec__reserveCount = purchases )
             productList.append(dict)
 
         # 创建订单
