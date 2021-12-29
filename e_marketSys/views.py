@@ -13,12 +13,18 @@ def login(request):
     if request.method == 'POST':
         userName = request.POST.get("username")
         passWord = request.POST.get("password")
+        print("2")
         checkUser = UserBasicInfo.objects(userName=userName)
+        print("1")
         if not checkUser:
             encrypto = make_password(passWord)
             newUser = UserBasicInfo(userName=userName,passWord=encrypto)
+            print(newUser.userName)
+            print("x")
             newUser.save()
+            print("b")
             checkUser = UserBasicInfo.objects(userName=userName)
+            print("a")
             return JsonResponse({"status":0,
                                  "data":{
                                      "_id":checkUser[0].id,
@@ -28,7 +34,7 @@ def login(request):
                                  }
                                  })
         else:
-            if check_password(passWord,checkUser.passWord):
+            if check_password(passWord,checkUser[0].passWord):
                 return JsonResponse({"status": 0,
                                      "data": {
                                          "_id": checkUser[0].id,
