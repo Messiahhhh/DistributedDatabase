@@ -8,13 +8,13 @@ import datetime
 
 class ProductDetailInfo(mongoengine.Document):
     proName = mongoengine.StringField(primary_key=True)
-    saleCount = mongoengine.IntField(null=True)
+    saleCount = mongoengine.IntField(default=0)
     image = mongoengine.StringField(null=True)
     price = mongoengine.FloatField(null=True)
     salePrice = mongoengine.FloatField(null=True)
     descript = mongoengine.StringField(null=True)
     saleDate = mongoengine.DateTimeField(null=True)
-    reserveCount = mongoengine.IntField(null=True)
+    reserveCount = mongoengine.IntField(default=0)
 
 
 class OrderInfo(mongoengine.Document):
