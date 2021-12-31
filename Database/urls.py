@@ -19,7 +19,7 @@ from e_marketSys import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/', views.login),
+    path('login', views.login),
     path('manage/user/add', views.manageUserAdd),
     path('manage/user/update', views.userUpdate),
     path('manage/user/list', views.userList),
