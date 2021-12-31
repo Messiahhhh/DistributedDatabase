@@ -292,16 +292,16 @@ def orderCreate(request):
                     
                     singleProduct = proDetail_col.find_one({'_id':thisOrder["name"]})
                     dict = {
-                        "name" : singleProduct['_id']                      ,
-                        "desc" : singleProduct['descript']                 ,
-                        "price" : singleProduct['price']                    ,
-                        "stock" : singleProduct['reserveCount']-purchases   ,
-                        "img" : singleProduct['image']                    ,
-                    "purchase" : purchases
+                            "name" : singleProduct['_id']                       ,
+                            "desc" : singleProduct['descript']                  ,
+                           "price" : singleProduct['price']                     ,
+                           "stock" : singleProduct['reserveCount']-purchases    ,
+                             "img" : singleProduct['image']                     ,
+                        "purchase" : purchases
                     }
                     # 更新库存
                     proDetail_col.update(
-                        { '_id' : thisOrder["name"]},
+                        { '_id' : thisOrder["name"] },
                         { '$inc': {
                                 'reserveCount':purchases*(-1)
                             }
@@ -313,10 +313,10 @@ def orderCreate(request):
                 # 创建订单
                 itemCount = len(productList)
                 orderinfo = {
-                    "orderId" : orderid     ,
-                    "count" : itemCount   ,
-                    "price" : totalPrice  ,
-                    "proId" : productList
+                    "orderId" : orderid       ,
+                      "count" : itemCount     ,
+                      "price" : totalPrice    ,
+                      "proId" : productList
                 }
                 # print("成功创建一个orderinfo")
                 
@@ -339,13 +339,13 @@ def orderCreate(request):
         return JsonResponse ({   
                                 "status": 0,
                                 "data":{
-                                           "_id" : orderid           ,
-                                       "_userid" : userid            ,
-                                    "totalPrice" : totalPrice        ,
+                                           "_id" : orderid              ,
+                                       "_userid" : userid               ,
+                                    "totalPrice" : totalPrice           ,
                                         # 下单日期
                                         "create" : OrderDetail['time']  ,
                                        # 过期时间 单位秒
-                                       "expired" : expiredTime       ,    
+                                       "expired" : expiredTime          ,    
                                       "products" : productList
                                 }
                             })
@@ -370,7 +370,7 @@ def orderList(request):
 
                     # 删除过期订单
                     if (expiredTime < 0):
-                        findOrder = orderInfo_col.find_one({'orderId':thisOrder['_id']})
+                        findOrder   = orderInfo_col.find_one({'orderId':thisOrder['_id']})
                         productList = findOrder['proId']
                         # print("成功找到该订单的商品列表")
 
@@ -381,8 +381,7 @@ def orderList(request):
                                 count += 1
                                 proDetail_col.update_one(
                                     { '_id':prod['name'] },
-                                    { '$inc':
-                                        {
+                                    { '$inc':{
                                             'reserveCount':prod['purchase']
                                         }
                                     }
@@ -404,11 +403,11 @@ def orderList(request):
                     # if
 
                     dict = {
-                            "_id" : thisOrder['_id']     ,
-                        "_userid" : thisOrder['userId']      ,
+                               "_id" : thisOrder['_id']         ,
+                           "_userid" : thisOrder['userId']      ,
                         "totalPrice" : thisOrder['payment']     ,
                             "create" : thisOrder['time']        ,
-                        "expired" : expiredTime           
+                           "expired" : expiredTime           
                     }
                     orderList.append(dict)
                 # for

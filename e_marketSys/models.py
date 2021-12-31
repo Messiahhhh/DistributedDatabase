@@ -14,6 +14,7 @@ class ProductDetailInfo(mongoengine.Document):
     descript = mongoengine.StringField(null=True)
     saleDate = mongoengine.DateTimeField(null=True)
     reserveCount = mongoengine.IntField(default=0)
+    purchase = mongoengine.IntField(default=0)
 
 
 class OrderInfo(mongoengine.Document):
