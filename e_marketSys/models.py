@@ -5,7 +5,6 @@ from django.db import models
 import mongoengine
 import datetime
 
-
 class ProductDetailInfo(mongoengine.Document):
     proName = mongoengine.StringField(primary_key=True)
     saleCount = mongoengine.IntField(null=True)
@@ -32,7 +31,7 @@ class OrderDetailInfo(mongoengine.Document):
     sendAddress = mongoengine.StringField(null=True)
     sendZip = mongoengine.StringField(null=True)
     sendTel = mongoengine.StringField(null=True)
-    payment = mongoengine.StringField(null=True)
+    payment = mongoengine.FloatField(null=True)
     meno = mongoengine.StringField(null=True)
     time = mongoengine.DateTimeField(default=datetime.datetime.now)
     tag = mongoengine.IntField(null=True)
