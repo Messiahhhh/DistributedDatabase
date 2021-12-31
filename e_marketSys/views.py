@@ -267,6 +267,7 @@ def orderCreate(request):
         # 生成物品清单 
         productList = []
         for item in products:
+            print(item)
             purchases = item["purchase"]
             singleProduct = ProductDetailInfo.objects(proName=item["name"])[0]
             dict = {
@@ -281,7 +282,6 @@ def orderCreate(request):
             productList.append(dict)
 
         # 创建订单
-        print("off")
         itemCount = len(productList)
         OrderInfo(orderId=OrderDetail,
                   count=itemCount,
