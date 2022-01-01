@@ -84,6 +84,14 @@ git checkout -b 分支名
 ### 过期自动删除功能  
 1、解压redis到自己的电脑  
 
+2、在redis目录下打开cmd，运行  
+
+`
+redis-server.exe
+`  
+
+启动redis服务  
+
 2、进入项目目录执行以下指令  
 `
 pip install celery==5.1.2
