@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from datetime import timedelta
 from pathlib import Path
 
+import pymongo
 from celery.schedules import crontab
 from mongoengine import connect
 from .celery import app
@@ -36,6 +37,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+bindip = "192.168.43.157"
+
+conns = pymongo.MongoClient(bindip, 27017)
 
 # Application definition
 

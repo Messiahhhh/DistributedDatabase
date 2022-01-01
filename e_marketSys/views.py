@@ -5,6 +5,8 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.contrib import admin
+
+from Database.settings import conns
 from .models import ProductDetailInfo, OrderInfo, OrderDetailInfo, UserBasicInfo
 from django.http import JsonResponse
 from django.http import HttpResponse
@@ -257,11 +259,7 @@ def productList(request):
                              })
 
 
-bindip = "192.168.43.157"
-
-
 def orderCreate(request):
-    conns = pymongo.MongoClient(bindip, 27017)
 
     orderDetail_col = conns["E_MARKET"]['order_detail_info']
     orderInfo_col = conns["E_MARKET"]['order_info']
@@ -362,7 +360,6 @@ def orderCreate(request):
 
 def orderList(request):
     if request.method == 'GET':
-        conns = pymongo.MongoClient(bindip, 27017)
 
         orderDetail_col = conns['E_MARKET']['order_detail_info']
         orderInfo_col = conns['E_MARKET']['order_info']

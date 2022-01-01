@@ -15,9 +15,9 @@ app.autodiscover_tasks()
 
 app.conf.beat_schedule = {
     "each10s_task": {
-        "task": "e_marketSys.tasks.add",
-        "schedule": 10,  # 每10秒钟执行一次
-        "args": (1, 3)
+        "task": "e_marketSys.tasks.dynamicDelete",
+        "schedule": 30,  # 每10秒钟执行一次
+        "args": ()
     },
 }
 # 一个测试任务
