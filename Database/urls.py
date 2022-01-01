@@ -30,6 +30,7 @@ urlpatterns = [
     path('manage/product/list', views.productList),
     path('manage/order/create', views.orderCreate),
     path('manage/order/list', views.orderList),
+    path('dbtest', views.dbtest)
 
 
 ]

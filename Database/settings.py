@@ -9,14 +9,21 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
+
+from celery.schedules import crontab
 from mongoengine import connect
+from .celery import app
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 connect('E_MARKET',host='192.168.43.157',port=27017,retryWrites="false")
+
+CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
+
+CELERY_TIMEZONE = "Asia/Shanghai"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -40,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'e_marketSys',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [

@@ -22,7 +22,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 def dbtest(request):
     pass
 
-
 def login(request):
     if request.method == 'POST':
         userName = request.POST.get("username")
