@@ -103,11 +103,9 @@ def userUpdate(request):
         passWord = request.POST.get("password")
         checkUser = UserBasicInfo.objects(userName=userName)
         if checkUser:
-            checkUser[0].id = id
-            checkUser[0].userName = userName
-            checkUser[0].passWord = make_password(passWord)
             try:
-                checkUser[0].save()
+                if passWord:
+                    tmp = UserBasicInfo.objects(userName=userName).update(set__passWord=str(make_password(passWord)))
                 return JsonResponse({"status": 0,
                                      "data": {
                                          "_id": checkUser[0].id,
