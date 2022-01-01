@@ -11,6 +11,7 @@ from django.http import HttpResponse
 from django.contrib.auth.hashers import make_password, check_password
 import datetime
 import json
+import pymongo
 import os
 from pathlib import Path
 
@@ -18,14 +19,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-
 def dbtest(request):
     pass
 
+
 def login(request):
     if request.method == 'POST':
-        userName = request.POST.get("username")
-        passWord = request.POST.get("password")
+        dict = json.loads(request.body)
+        userName = dict["username"]
+        passWord = dict["password"]
+        # userName = request.POST.get("username")
+        # passWord = request.POST.get("password")
         checkUser = UserBasicInfo.objects(userName=userName)
         if not checkUser:
             encrypto = make_password(passWord)
@@ -121,7 +125,8 @@ def userUpdate(request):
 
     else:
         return HttpResponse(status=404)
-      
+
+
 # 查看所有用户
 def userList(request):
     if request.method == 'GET':
@@ -139,6 +144,7 @@ def userList(request):
             "status": 0,
             "data": data,
         })
+
 
 # 用户删除
 def userDelete(request):
@@ -194,6 +200,7 @@ def productAdd(request):
                 "msg": "商品已存在！",
             })
 
+
 def productUpdate(request):
     if request.method == 'POST':
         _id = request.POST.get("_id")
@@ -204,13 +211,14 @@ def productUpdate(request):
         reserveCount = request.POST.get("reserveCount")
         check = ProductDetailInfo.objects(proName=name)
         if not check:
-            new_product = ProductDetailInfo(proName=name, descript=desc, price=price, image=img,reserveCount=reserveCount)
+            new_product = ProductDetailInfo(proName=name, descript=desc, price=price, image=img,
+                                            reserveCount=reserveCount)
             new_product.save()
             return JsonResponse({"status": 0
                                  })
         else:
             if desc:
-                tmp = ProductDetailInfo(proName = name).update(set__descript = str(desc))
+                tmp = ProductDetailInfo(proName=name).update(set__descript=str(desc))
             if price:
                 tmp = ProductDetailInfo(proName=name).update(set__price=price)
             if img:
@@ -224,28 +232,41 @@ def productUpdate(request):
 def productDelete(request):
     if request.method == 'POST':
         _id = request.POST.get("_id")
-        ProductDetailInfo(proName= _id).delete()
+        ProductDetailInfo(proName=_id).delete()
         return JsonResponse({"status": 0
-                                 })
+                             })
+
+
 def productList(request):
     if request.method == 'GET':
         products = ProductDetailInfo.objects.all().order_by("+proName")
-        return  JsonResponse({"status":0,
-                                 "data":{
-                                     "products": [
-                                         {
-                                             "imgs":i.image,
-                                             "_id" :i.id,
-                                             "name":i.proName,
-                                             "desc":i.descript,
-                                             "price":i.price,
-                                             "stock":i.reserveCount
-                                         }
-                                         for i in products
-                                     ]
-                                 }
-                                 })
+        return JsonResponse({"status": 0,
+                             "data": {
+                                 "products": [
+                                     {
+                                         "imgs": i.image,
+                                         "_id": i.id,
+                                         "name": i.proName,
+                                         "desc": i.descript,
+                                         "price": i.price,
+                                         "stock": i.reserveCount
+                                     }
+                                     for i in products
+                                 ]
+                             }
+                             })
+
+
+bindip = "192.168.43.157"
+
+
 def orderCreate(request):
+    conns = pymongo.MongoClient(bindip, 27017)
+
+    orderDetail_col = conns["E_MARKET"]['order_detail_info']
+    orderInfo_col = conns["E_MARKET"]['order_info']
+    proDetail_col = conns["E_MARKET"]['product_detail_info']
+
     if request.method == 'POST':
         dict = json.loads(request.body)
 
@@ -254,40 +275,74 @@ def orderCreate(request):
         totalPrice = dict["totalPrice"]
         products = dict["product"]
 
-        userInfo = UserBasicInfo.objects(userName=userid)[0]
+        with conns.start_session(causal_consistency=True) as session:
+            with session.start_transaction():
+                # 创建订单详情
+                OrderDetail = {
+                    "_id": orderid,
+                    "orderNo": None,
+                    "userId": userid,
+                    "sendName": None,
+                    "sendAddress": None,
+                    "sendZip": None,
+                    "sendTel": None,
+                    "payment": totalPrice,
+                    "meno": None,
+                    "time": datetime.datetime.now(),
+                    "tag": None
+                }
 
+                # 生成物品清单 
+                productList = []
+                for thisOrder in products:
+                    purchases = thisOrder["purchase"]
+                    print("买了", purchases, "个", thisOrder['name'])
 
-        # 创建订单详情
-        OrderDetail = OrderDetailInfo(orderId=orderid,
-                                      userId=userInfo,
-                                      payment=totalPrice).save()
+                    singleProduct = proDetail_col.find_one({'_id': thisOrder["name"]})
+                    dict = {
+                        "name": singleProduct['_id'],
+                        "desc": singleProduct['descript'],
+                        "price": singleProduct['price'],
+                        "stock": singleProduct['reserveCount'] - purchases,
+                        "img": singleProduct['image'],
+                        "purchase": purchases
+                    }
+                    # 更新库存
+                    proDetail_col.update(
+                        {'_id': thisOrder["name"]},
+                        {'$inc': {
+                            'reserveCount': purchases * (-1)
+                        }
+                        }
+                    )
+                    # print("成功更新库存")
+                    productList.append(dict)
 
+                # 创建订单
+                itemCount = len(productList)
+                orderinfo = {
+                    "orderId": orderid,
+                    "count": itemCount,
+                    "price": totalPrice,
+                    "proId": productList
+                }
+                # print("成功创建一个orderinfo")
 
-        # 生成物品清单 
-        productList = []
-        for item in products:
-            print(item)
-            purchases = item["purchase"]
-            singleProduct = ProductDetailInfo.objects(proName=item["name"])[0]
-            dict = {
-                "name": singleProduct.proName,
-                "desc": singleProduct.descript,
-                "price": singleProduct.price,
-                "stock": singleProduct.reserveCount - purchases,
-                "img": singleProduct.image
-            }
-            # 更新库存
-            singleProduct.update(dec__reserveCount=purchases)
-            productList.append(dict)
+                try:
+                    orderDetail_col.insert_one(document=OrderDetail)
+                    # print("成功插入了一个OrderDetail")
+                    orderInfo_col.insert_one(document=orderinfo)
+                    # print("成功插入一个orderinfo")
+                except:
+                    # 操作异常，中断事务
+                    session.abort_transaction()
+                else:
+                    session.commit_transaction()
+                finally:
+                    session.end_session()
+        # with
 
-        # 创建订单
-        itemCount = len(productList)
-        OrderInfo(orderId=OrderDetail,
-                  count=itemCount,
-                  price=totalPrice,
-                  proId=productList).save()
-
-        expiredTime = OrderDetail.time + datetime.timedelta(days=1) - datetime.datetime.now()
+        expiredTime = OrderDetail['time'] + datetime.timedelta(minutes=30) - datetime.datetime.now()
         expiredTime = expiredTime.total_seconds()
         return JsonResponse({
             "status": 0,
@@ -296,8 +351,8 @@ def orderCreate(request):
                 "_userid": userid,
                 "totalPrice": totalPrice,
                 # 下单日期
-                "create": OrderDetail.time,
-                # 还有1天过期 单位毫秒
+                "create": OrderDetail['time'],
+                # 过期时间 单位秒
                 "expired": expiredTime,
                 "products": productList
             }
@@ -307,22 +362,63 @@ def orderCreate(request):
 
 def orderList(request):
     if request.method == 'GET':
-        orders = OrderDetailInfo.objects()
+        conns = pymongo.MongoClient(bindip, 27017)
 
-        # 生成订单列表
-        orderList = []
-        for item in orders:
-            expiredTime = item.time + datetime.timedelta(days=1) - datetime.datetime.now()
-            expiredTime = expiredTime.total_seconds()
-            dict = {
-                "_id": item.orderId,
-                "_userid": item.userId.id,
-                "totalPrice": item.payment,
-                "create": item.time,
-                "expired": expiredTime
-            }
-            orderList.append(dict)
+        orderDetail_col = conns['E_MARKET']['order_detail_info']
+        orderInfo_col = conns['E_MARKET']['order_info']
+        proDetail_col = conns['E_MARKET']['product_detail_info']
 
+        with conns.start_session(causal_consistency=True) as session:
+            with session.start_transaction():
+                # 生成订单列表
+                orderList = []
+                for thisOrder in orderDetail_col.find():
+                    expiredTime = thisOrder['time'] + datetime.timedelta(seconds=30) - datetime.datetime.now()
+                    expiredTime = expiredTime.total_seconds()
+
+                    # 删除过期订单
+                    if (expiredTime < 0):
+                        findOrder = orderInfo_col.find_one({'orderId': thisOrder['_id']})
+                        productList = findOrder['proId']
+                        # print("成功找到该订单的商品列表")
+
+                        # 恢复库存
+                        count = 0
+                        try:
+                            for prod in productList:
+                                count += 1
+                                proDetail_col.update_one(
+                                    {'_id': prod['name']},
+                                    {'$inc': {
+                                        'reserveCount': prod['purchase']
+                                    }
+                                    }
+                                )
+                                # print("恢复",prod['purchase'],"个",prod['name'])
+
+                            # print("一共恢复了",count,"个商品库存")
+                            # print("当前订单Id为：",thisOrder['_id'])
+                            orderDetail_col.delete_one({'_id': thisOrder['_id']})
+                            orderInfo_col.delete_one({'orderId': thisOrder['_id']})
+                        except:
+                            # 操作异常，中断事务
+                            session.abort_transaction()
+                        else:
+                            session.commit_transaction()
+                        finally:
+                            session.end_session()
+                        continue
+                    # if
+
+                    dict = {
+                        "_id": thisOrder['_id'],
+                        "_userid": thisOrder['userId'],
+                        "totalPrice": thisOrder['payment'],
+                        "create": thisOrder['time'],
+                        "expired": expiredTime
+                    }
+                    orderList.append(dict)
+                # for
     return JsonResponse({
         "status": 0,
         "data": {

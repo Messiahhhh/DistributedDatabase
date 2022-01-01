@@ -5,7 +5,6 @@ from django.db import models
 import mongoengine
 import datetime
 
-
 class ProductDetailInfo(mongoengine.Document):
     proName = mongoengine.StringField(primary_key=True)
     saleCount = mongoengine.IntField(default=0)
@@ -15,6 +14,7 @@ class ProductDetailInfo(mongoengine.Document):
     descript = mongoengine.StringField(null=True)
     saleDate = mongoengine.DateTimeField(null=True)
     reserveCount = mongoengine.IntField(default=0)
+    purchase = mongoengine.IntField(default=0)
 
 
 class OrderInfo(mongoengine.Document):
