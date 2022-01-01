@@ -80,7 +80,42 @@ https://www.postman.com/
 
 `
 git checkout -b 分支名
+`  
+### 过期自动删除功能  
+1、解压redis到自己的电脑  
+
+2、进入项目目录执行以下指令  
 `
+pip install celery==5.1.2
+`  
+
+`
+pip install redis==3.5.1
+`  
+
+`
+pip install django-celery-beat==2.2.0
+`  
+3、启动项目时开三个终端，分别执行以下命令（有先后顺序）  
+
+`python manage.py runserver 自己电脑的ip:5000`  
+
+`celery -A Database beat -l info `  
+
+`Celery -A Database worker -l info -P eventlet`
+
+4、默认设置自动删除订单查询间隔为30s询问一次，如果想更改可以到`/Database/celery.py`第19行更改询问间隔  
+
+5、pymongo的conns创建已经移入`/Database/settings.py`40行，可以绑定自己的虚拟机ip，mongoengine的连接ip在该文件的23行，也可以改成自己的虚拟机ip
+
+
+
+
+
+
+
+
+
 
 
 
