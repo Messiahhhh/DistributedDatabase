@@ -87,7 +87,7 @@ git checkout -b 分支名
 2、在redis目录下打开cmd，运行  
 
 `
-redis-server.exe
+redis-server.exe redis.windows.conf
 `  
 
 启动redis服务  
